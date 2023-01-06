@@ -1,0 +1,5 @@
+baseURL = 'http://codingdoc.github.io/'
+languageCode = 'en-us'
+title = '渊虹ypro'
+BookSection = 'docs'
+theme = 'hugo-book'

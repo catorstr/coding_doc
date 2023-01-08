@@ -1,3 +1,4 @@
+# 去中心化存储
 ## IPFS
 > IPFS 全称interplanetary File System星际文件系统，星际文件系统 (IPFS) 是一种用于构建下一代互联网的去中心化文件系统。Filecoin等许多流行的 Web3 项目都是基于 IPFS 构建的。有人称它为区块链和 Web3 的硬盘，尽管它的功能扩展得更远。
 文件+文件夹+各种格式
@@ -271,7 +272,7 @@ func main() {
 		fmt.Printf("c.Put err: %v\n", err)
 		return
 	}
-	
+
 	//4.浏览器访问我们上传的文件
 	/*
 		默认情况下，上传到 web3.storage 的文件将被包装在 IPFS 目录列表中。这会保留原始文件名，并使链接比 CID 字符串更人性化，后者看起来像是随机的乱码。

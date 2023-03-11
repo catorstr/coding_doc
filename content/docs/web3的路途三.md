@@ -1,8 +1,6 @@
-# 去中心化存储
+# Web3去中心化存储
 ## IPFS
-> IPFS 全称interplanetary File System星际文件系统，星际文件系统 (IPFS) 是一种用于构建下一代互联网的去中心化文件系统。Filecoin等许多流行的 Web3 项目都是基于 IPFS 构建的。有人称它为区块链和 Web3 的硬盘，尽管它的功能扩展得更远。
-文件+文件夹+各种格式
-特点：去中心化，分布式摒弃中心化服务器，更具弹性、健壮性的互联网，提供更快、更敏捷的数据访问。
+> xxxxxxxxxx ​​js
 
 ## Filecoin
 > Filecoin 是专门重新为web3而设计的存储网络。ipfs提供热存储(快速+灵活数据检索)，Filecoin提供冷存储(永久保存，可验证)。
@@ -138,7 +136,7 @@ ipfs cat /ipfs/QmdDTor6dWzknFJPJuhJgrUYqd56WkFXYAxyxpEY7kUrEb > init.jpg
 若不带路径（ipfs/HASH）参数，则会列出本地节点的所有pin信息
 ```
 ### ipfs数据迁移
-> 如果需要迁移ipfs数据时。只需要将原有ipfs服务中的IPFS_PATH映射到新的ipfs服务即可
+
 ```bash
 # 1. 将旧的ipfs服务拷贝到需要部署新的ipfs服务器中
 # 2. 设置IPFS_PATH为拷贝的旧ipfs服务的目录

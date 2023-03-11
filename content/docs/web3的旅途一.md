@@ -127,9 +127,8 @@ export default defineConfig({})
 yarn add gsap dat.gui three
 mkdir src/assets/imgs
 ```
-```js
+```javascript
 # touch main.js
 import * as THREE from "three"
 console.log(THREE) //查看three.js是否引入成功
-
 ```

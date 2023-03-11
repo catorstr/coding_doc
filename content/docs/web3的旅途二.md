@@ -1,4 +1,4 @@
-# three.js 的学习
+# web3前端篇three.js 的学习
 
 ```js
 #接上一节main.js文件

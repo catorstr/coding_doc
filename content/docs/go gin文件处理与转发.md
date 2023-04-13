@@ -1,4 +1,4 @@
-# gin 文件上传
+# gin 文件处理
 
 ### 单个文件
 
@@ -180,6 +180,8 @@ defer resp.Body.Close()
 
 ```html
 headers = {'Content-Type': 'multipart/form-data; boundary=分界线参数'}
+
+分界线参数如： boundary=----WebKitFormBoundaryFJdWuYqSbbdzsuiV
 ```
 
 请注意，分界线参数是任意选择的字符串，只需要确保它在整个请求体中是唯一的。

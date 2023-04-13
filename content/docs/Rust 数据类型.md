@@ -25,13 +25,16 @@ fn main() {
     //num =2 //这里报错了，说明我们用let 声明的num是不可变的变量，只能对它进行一次赋值，
     /* 
 变量
-Rust 使用 let 声明一个变量，通常来说变量将是可变的，但是在 Rust 中默认设置的变量是预设不可变的，这也是 Rust 推动你能充分利用其提供的安全性来写程序的方式之一，Rust 中鼓励你多多使用不可变的，当然如果你明确知道该变量是可变得，也是可以的。
+Rust 使用 let 声明一个变量，通常来说变量将是可变的，但是在 Rust 中默认设置的变量是预设不可变的，在Rust中，变量在默认情况下是不可变的这意味着一旦我们给变量一个值，这个值就不会改变。这也是 Rust 推动你能充分利用其提供的安全性来写程序的方式之一，Rust 中鼓励你多多使用不可变的，当然如果你明确知道该变量是可变得，也是可以的。
 rust和go一样声明的变量必须使用，不然会报错，这也许是新型语言的一个特点吧
     */
     println!("不可变的变量num = {}",num); //注意，println! 后面加上了符号 ! 并不是一个函数，而是一个宏。{}可以理解为一个格式化方式
+    //为了使变量具有可变性，我们在变量名前添加mut:
     let mut num2 = 2; //在变量名称前加上 mut 关键字，表明该变量是可变的。
     num2 = 3; //这时候对变量进行赋值，就不会报错了
     println!("可变的变量num2 = {}",num2);
+    let x = 5;
+    println!("The value of x is: {x}"); //The value of x is: 5
 /*
 常量
 常量使用 const 声明，之后是不可变的，在声明时必须指定变量类型，这也是与 let 的不同，还需注意的是常量名称一定要大写，否则编译阶段也是会报错的。
@@ -55,7 +58,6 @@ rust和go一样声明的变量必须使用，不然会报错，这也许是新�
 
 
 ```
-
 
 #### 浮点型
 
@@ -96,7 +98,6 @@ fn main() {
 ### 复合类型
 
 复合类型可以组合多个数值为一个类别，复合类型包含两种：元组（tuples）和数组（arrays）。
-
 
 #### 元组
 
@@ -154,20 +155,5 @@ i = 1,c =H,f= 1.25
 arr[0]=1,arr[4]=5
  */
 }
-
-```
-
-### 扩展
-
-```bash
-#将源代码编译成可执行文件
-root@DESKTOP-INJPABC:~/worksapce/dev/rustStudy/helo-rust/src# rustc main.rs
- #运行编译生成的可执行文件
-root@DESKTOP-INJPABC:~/worksapce/dev/rustStudy/helo-rust/src# ./main 
-tup.0 = 1,tup.1 =H,tup.2 =1.25
-i = 1,c =H,f= 1.25
-arr[0]=1,arr[4]=5
-root@DESKTOP-INJPABC:~/worksapce/dev/rustStudy/helo-rust/src# 
-
 
 ```

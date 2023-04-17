@@ -306,3 +306,57 @@ LABEL <key>=<value><key>=<value><key>=<value>...
 ```
 LABEL org.opencontainers.image.authors="lhc"
 ```
+
+# 例子
+
+> 假设，现在已经部署了部署并运行了一个mongo的镜像服务，我们也要将自己编写的go web程序部署为一个容器服务，该什么做呢？
+
+### 编写Dockerfile文件
+
+在我们项目的根目录下构建一个Dockerfie文件
+
+```yaml
+FROM golang:alpine AS builder
+
+# 为我们的镜像设置必要的环境变量
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    GOPROXY=https://goproxy.cn,direct
+
+# 移动到工作目录：/build
+WORKDIR /build
+
+# 将代码复制到容器中
+COPY . .
+
+# 将我们的代码编译成二进制可执行文件 app
+RUN go build -o app .
+
+###################
+# 再创建一个镜像
+###################
+FROM scratch
+
+# 从builder镜像中把/dist/app 拷贝到当前目录
+COPY --from=builder /build/app /
+
+# 需要运行的命令
+ENTRYPOINT ["./app", "-addr", ":3001","-gsp","127.0.0.1:8080","-mongo","admin:123456@127.0.0.1:27017"] #这里和平常我们瘦到运行我们的程序一样
+#CMD ["./sc-faq", "--addr", "127.0.0.1:3001","--gsp","127.0.0.1:8080","--mongo","admin:123456@127.0.0.1:27017"]
+```
+
+### 通过dockerfile构建镜像
+
+```bash
+docker build -t app:v1.0.0  .
+```
+
+### 运行一个容器
+
+```bash
+docker run -p :3001:3001 镜像id 我们程序本身的参数
+如：
+ docker run -p 3001:3001  8dc581f50fa3 -gsp 172.19.94.221:8080 -mongo admin:123456@172.19.94.221:27017
+```

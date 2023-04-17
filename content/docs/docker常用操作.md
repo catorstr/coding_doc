@@ -128,6 +128,6 @@ my-mongo-image   latest    493672733c51   35 minutes ago   646MB
 docker start/stop/restart 容器id #启动/关闭/重启一个容器
 docker ps -a #查看容器状态
 docker images #列出当前所有的镜像
-docker rm -f 镜像id/名称 #删除一个镜像(需要验证一下，记不太清了)
-docker rmi 容器id #删除一个容器
+docker rm -f 容器id/名称 #删除一个容器
+docker rmi 镜像id #删除一个镜像
 ```

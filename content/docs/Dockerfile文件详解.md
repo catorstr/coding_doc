@@ -360,3 +360,67 @@ docker run -p :3001:3001 镜像id 我们程序本身的参数
 如：
  docker run -p 3001:3001  8dc581f50fa3 -gsp 172.19.94.221:8080 -mongo admin:123456@172.19.94.221:27017
 ```
+
+### 看看其他大佬是什么写Dockerfile文件的
+
+```yaml
+FROM golang:alpine AS builder
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories \
+    && apk add --no-cache make git
+RUN go env -w GO111MODULE=on && go env -w GOPROXY=https://goproxy.cn,direct
+COPY . /build
+WORKDIR /build
+RUN make docker-build
+
+FROM registry.otrs365.cn/hub/alpine:3.12
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories \
+    && apk add --no-cache tzdata
+
+COPY --from=builder /build/gsp-faq /app/gsp-faq
+
+EXPOSE  8080
+CMD [ "/app/gsp-faq" ]
+
+```
+
+#### 还配一个Makefile文件
+
+```makefile
+GOPATH:=$(shell go env GOPATH)
+APP_NAME="gsp-faq"
+# Release variables
+# ------------------
+GIT_COMMIT?=$(shell git rev-parse "HEAD^{commit}" 2>/dev/null)
+GIT_TAG?=$(shell git describe --abbrev=0 --tags 2>/dev/null)
+BUILD_DATE:=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
+
+#LDFLAGS:=-X 'main.gitVersion=$(GIT_TAG)' -X 'main.gitCommit=$(GIT_COMMIT)' -X 'main.buildDate=$(BUILD_DATE)'
+REGISTRY?="xxxx" #镜像的私有仓库
+
+.PHONY: build
+build: test
+	go build -ldflags "$(LDFLAGS)" -o ${APP_NAME} .
+
+.PHONY: test
+test:
+	go test -v ./... -cover
+
+docker-build:
+	go build -ldflags "$(LDFLAGS)" -o ${APP_NAME} .
+
+docker:
+	docker build . -t "${REGISTRY}/${APP_NAME}:${GIT_COMMIT}"
+	docker push "${REGISTRY}/${APP_NAME}:${GIT_COMMIT}"
+
+```
+
+> #### 编译
+>
+> ```bash
+> make build
+> # docker image
+> make docker
+>
+> ```
+>

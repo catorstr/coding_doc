@@ -131,3 +131,116 @@ docker images #列出当前所有的镜像
 docker rm -f 容器id/名称 #删除一个容器
 docker rmi 镜像id #删除一个镜像
 ```
+
+> 如何将自己使用dockerfile构建的镜像上传到docker hub上作为一个使用镜像?
+
+>
+> 要将自己使用Dockerfile构建的镜像上传到Docker Hub上，并将其用作镜像，您需要遵循以下步骤：
+>
+> 1. 登录到Docker Hub并创建一个名为`<your-repository-name>`的仓库。
+> 2. 在终端中运行以下命令以登录到Docker Hub：
+>
+>    ```
+>    docker login
+>    ```
+>
+>    您将被要求提供Docker Hub的用户名和密码。
+> 3. 在终端中运行以下命令以构建镜像：
+>
+>    ```
+>    docker build -t <your-dockerhub-username>/<your-repository-name>:<tag> .
+>    ```
+>
+>    其中，`<your-dockerhub-username>`是您的Docker Hub用户名，`<your-repository-name>`是您的仓库名称，`<tag>`是您的镜像标记。例如，您可以将镜像标记设置为“latest”。
+> 4. 运行以下命令以将您的镜像上传到Docker Hub：
+>
+>    ```
+>    docker push <your-dockerhub-username>/<your-repository-name>:<tag>
+>    ```
+>
+>    这将上传您的镜像并将其存储在Docker Hub中。
+> 5. 在另一个主机上，使用以下命令拉取您的镜像：
+>
+>    ```
+>    docker pull <your-dockerhub-username>/<your-repository-name>:<tag>
+>    ```
+>
+>    这将从Docker Hub中下载并存储您的镜像。
+> 6. 在主机上运行以下命令以启动容器：
+>
+>    ```
+>    docker run -d -p <host-port>:<container-port> <your-dockerhub-username>/<your-repository-name>:<tag>
+>    ```
+>
+>    其中，`<host-port>`是您要将容器映射到的主机端口，`<container-port>`是容器内部正在运行的端口。例如，如果您的容器正在侦听端口80，则`<container-port>`应为80。
+>
+>    请注意，此命令将在后台启动容器，并将容器输出连接到主机终端。
+>
+> 现在，您已经成功将自己使用Dockerfile构建的镜像上传到Docker Hub上，并将其用作镜像启动了一个容器。
+
+> 那如何拉取使用这个镜像呢?
+
+>
+> 要拉取使用Docker Hub上的镜像，您需要遵循以下步骤：
+>
+> 1. 在终端中运行以下命令，以拉取镜像：
+>
+>    ```
+>    docker pull <your-dockerhub-username>/<your-repository-name>:<tag>
+>    ```
+>
+>    其中，`<your-dockerhub-username>`是您的Docker Hub用户名，`<your-repository-name>`是您的仓库名称，`<tag>`是您的镜像标记。例如，您可以将镜像标记设置为“latest”。
+> 2. 等待Docker从Docker Hub中下载镜像。该过程可能需要几分钟，具体取决于您的网络连接和镜像的大小。
+> 3. 运行以下命令以启动容器：
+>
+>    ```
+>    docker run -d -p <host-port>:<container-port> <your-dockerhub-username>/<your-repository-name>:<tag>
+>    ```
+>
+>    其中，`<host-port>`是您要将容器映射到的主机端口，`<container-port>`是容器内部正在运行的端口。例如，如果您的容器正在侦听端口80，则`<container-port>`应为80。
+>
+>    请注意，此命令将在后台启动容器，并将容器输出连接到主机终端。
+>
+> 现在，您已经成功拉取使用Docker Hub上的镜像启动了一个容器。
+
+> 如何将自己使用dockerfile构建的镜像上传到gitlab作为一个使用镜像?
+
+>
+> 要将自己使用Dockerfile构建的镜像上传到GitLab并将其用作镜像，您需要遵循以下步骤：
+>
+> 1. 登录到GitLab并创建一个新项目。
+> 2. 在终端中运行以下命令以登录到GitLab：
+>
+>    ```
+>    docker login registry.gitlab.com
+>    ```
+>    您将被要求提供GitLab的用户名和密码。
+> 3. 在终端中运行以下命令以构建镜像：
+>
+>    ```
+>    docker build -t registry.gitlab.com/<your-gitlab-username>/<your-project-name>:<tag> .
+>    ```
+>    其中，`<your-gitlab-username>`是您的GitLab用户名，`<your-project-name>`是您的项目名称，`<tag>`是您的镜像标记。例如，您可以将镜像标记设置为“latest”。
+> 4. 运行以下命令以将您的镜像上传到GitLab：
+>
+>    ```
+>    docker push registry.gitlab.com/<your-gitlab-username>/<your-project-name>:<tag>
+>    ```
+>    这将上传您的镜像并将其存储在GitLab的容器仓库中。
+> 5. 在另一个主机上，使用以下命令拉取您的镜像：
+>
+>    ```
+>    docker login registry.gitlab.com
+>    docker pull registry.gitlab.com/<your-gitlab-username>/<your-project-name>:<tag>
+>    ```
+>    这将从GitLab中下载并存储您的镜像。
+> 6. 在主机上运行以下命令以启动容器：
+>
+>    ```
+>    docker run -d -p <host-port>:<container-port> registry.gitlab.com/<your-gitlab-username>/<your-project-name>:<tag>
+>    ```
+>    其中，`<host-port>`是您要将容器映射到的主机端口，`<container-port>`是容器内部正在运行的端口。例如，如果您的容器正在侦听端口80，则`<container-port>`应为80。
+>
+>    请注意，此命令将在后台启动容器，并将容器输出连接到主机终端。
+>
+> 现在，您已经成功将自己使用Dockerfile构建的镜像上传到GitLab上，并将其用作镜像启动了一个容器。

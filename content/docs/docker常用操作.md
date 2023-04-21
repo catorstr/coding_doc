@@ -3,6 +3,7 @@
 > Docker是一个开源的容器化平台，可以帮助开发者快速构建、测试和部署应用程序。在使用Docker时，需要使用各种不同的参数来配置和管理容器。下面是一些常用的Docker参数及其解释。
 
 ```bash
+
 -d，--detach
 #后台运行容器，不阻塞命令行界面。
 -p，--publish
@@ -33,9 +34,135 @@
 #指定容器使用的用户。
 --entrypoint
 #指定容器启动时执行的命令。
+
 ```
 
 以上是Docker常用的一些参数及其解释。在实际使用中，还有许多其他的参数可以用来配置和管理容器，具体使用还需参考Docker文档。
+
+### docker 安装
+
+Docker官方和国内daocloud都提供了一键安装的脚本，使得Docker的安装更加便捷。
+
+官方的一键安装方式：
+
+```bash
+curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun #指定镜像为阿里云
+```
+
+国内 daocloud一键安装命令：
+
+```bash
+curl -sSL https://get.daocloud.io/docker | sh
+```
+
+执行上述任一条命令，耐心等待即可完成Docker的安装。
+
+另外一种安装方式：
+
+卸载系统之前的 docker：
+
+```bash
+sudo yum remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-engine
+
+```
+
+**安装 Docker-CE**
+安装必要依赖
+
+```bash
+sudo yum install -y yum-utils
+```
+
+```bash
+sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+```
+
+### 验证是否安装成功
+
+启动docker
+
+```bash
+sudo systemctl start docker
+```
+
+通过运行hello-world镜像来验证是否正确安装了Docker Engine-Community。
+
+```bash
+// 拉取镜像
+sudo docker pull hello-world
+// 执行hello-world
+sudo docker run hello-world
+```
+
+设置开机自启动
+
+```bash
+sudo systemctl enable docker
+```
+
+### 配置 docker 镜像加速
+
+```bash
+# 创建目录
+sudo mkdir -p /etc/docker
+# 配置镜像加速器地址
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://hl1kipsc.mirror.aliyuncs.com"]
+}
+EOF
+# 重启docker
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+### 卸载docker
+
+停止docker
+
+```bash
+systemctl stop docker
+```
+
+查看[yum安装](https://so.csdn.net/so/search?q=yum%E5%AE%89%E8%A3%85&spm=1001.2101.3001.7020)的docker文件包
+
+```bash
+yum list installed |grep docker
+
+[root@localhost ~]# yum list installed |grep docker
+containerd.io.x86_64                    1.6.9-3.1.el7                  @docker-ce-stable
+docker-ce.x86_64                        3:20.10.21-3.el7               @docker-ce-stable
+docker-ce-cli.x86_64                    1:20.10.21-3.el7               @docker-ce-stable
+docker-ce-rootless-extras.x86_64        20.10.21-3.el7                 @docker-ce-stable
+docker-compose-plugin.x86_64            2.12.2-3.el7                   @docker-ce-stable
+docker-scan-plugin.x86_64               0.21.0-3.el7                   @docker-ce-stable
+```
+
+删除上一步查询出来的yum安装包：
+
+```bash
+yum remove containerd.io.x86_64   
+```
+
+删除镜像、容器、配置文件等内容：
+
+```bash
+rm -rf /var/lib/docker
+```
+
+验证删除成功
+
+```bash
+docker -v
+```
 
 ### docker 与容器
 
@@ -125,19 +252,47 @@ my-mongo-image   latest    493672733c51   35 minutes ago   646MB
 ### docker 常用命令
 
 ```bash
-docker start/stop/restart 容器id #启动/关闭/重启一个容器
-docker ps -a #查看容器状态
-docker images #列出当前所有的镜像
-docker rm -f 容器id/名称 #删除一个容器
-docker rmi 镜像id #删除一个镜像
+
+# 查看docker版本号
+docker -v
+# 启动docker
+sudo systemctl start docker
+# 查看docker状态
+sudo systemctl status docker
+# 关闭docker
+sudo systemctl stop docker
+# 搜索仓库镜像
+docker search 
+# 拉取镜像：
+docker pull 镜像名
+# 查看正在运行的容器：
+docker ps
+# 查看所有容器：
+docker ps -a
+# 删除容器：
+docker rm container_id
+# 查看镜像：
+docker images
+# 删除镜像：
+docker rmi image_id
+# 启动（停止的）容器：
+docker start 容器ID
+# 停止容器：
+docker stop 容器ID
+# 重启容器：
+docker restart 容器ID
+# 查看容器日志
+docker logs 容器id
+# 重启容器
+docker restart 容器名称
+
 ```
 
 > 如何将自己使用dockerfile构建的镜像上传到docker hub上作为一个使用镜像?
 
->
 > 要将自己使用Dockerfile构建的镜像上传到Docker Hub上，并将其用作镜像，您需要遵循以下步骤：
 >
-> 1. 登录到Docker Hub并创建一个名为`<your-repository-name>`的仓库。
+> 1. 登录到Docker Hub并创建一个名为 `<your-repository-name>`的仓库。
 > 2. 在终端中运行以下命令以登录到Docker Hub：
 >
 >    ```
@@ -172,7 +327,7 @@ docker rmi 镜像id #删除一个镜像
 >    docker run -d -p <host-port>:<container-port> <your-dockerhub-username>/<your-repository-name>:<tag>
 >    ```
 >
->    其中，`<host-port>`是您要将容器映射到的主机端口，`<container-port>`是容器内部正在运行的端口。例如，如果您的容器正在侦听端口80，则`<container-port>`应为80。
+>    其中，`<host-port>`是您要将容器映射到的主机端口，`<container-port>`是容器内部正在运行的端口。例如，如果您的容器正在侦听端口80，则 `<container-port>`应为80。
 >
 >    请注意，此命令将在后台启动容器，并将容器输出连接到主机终端。
 >
@@ -180,7 +335,6 @@ docker rmi 镜像id #删除一个镜像
 
 > 那如何拉取使用这个镜像呢?
 
->
 > 要拉取使用Docker Hub上的镜像，您需要遵循以下步骤：
 >
 > 1. 在终端中运行以下命令，以拉取镜像：
@@ -197,7 +351,7 @@ docker rmi 镜像id #删除一个镜像
 >    docker run -d -p <host-port>:<container-port> <your-dockerhub-username>/<your-repository-name>:<tag>
 >    ```
 >
->    其中，`<host-port>`是您要将容器映射到的主机端口，`<container-port>`是容器内部正在运行的端口。例如，如果您的容器正在侦听端口80，则`<container-port>`应为80。
+>    其中，`<host-port>`是您要将容器映射到的主机端口，`<container-port>`是容器内部正在运行的端口。例如，如果您的容器正在侦听端口80，则 `<container-port>`应为80。
 >
 >    请注意，此命令将在后台启动容器，并将容器输出连接到主机终端。
 >
@@ -205,7 +359,6 @@ docker rmi 镜像id #删除一个镜像
 
 > 如何将自己使用dockerfile构建的镜像上传到gitlab作为一个使用镜像?
 
->
 > 要将自己使用Dockerfile构建的镜像上传到GitLab并将其用作镜像，您需要遵循以下步骤：
 >
 > 1. 登录到GitLab并创建一个新项目。
@@ -239,7 +392,7 @@ docker rmi 镜像id #删除一个镜像
 >    ```
 >    docker run -d -p <host-port>:<container-port> registry.gitlab.com/<your-gitlab-username>/<your-project-name>:<tag>
 >    ```
->    其中，`<host-port>`是您要将容器映射到的主机端口，`<container-port>`是容器内部正在运行的端口。例如，如果您的容器正在侦听端口80，则`<container-port>`应为80。
+>    其中，`<host-port>`是您要将容器映射到的主机端口，`<container-port>`是容器内部正在运行的端口。例如，如果您的容器正在侦听端口80，则 `<container-port>`应为80。
 >
 >    请注意，此命令将在后台启动容器，并将容器输出连接到主机终端。
 >

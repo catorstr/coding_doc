@@ -47,7 +47,6 @@ $ protoc --proto_path=. --go_out=. proto/greeter/greeter.proto
 
 ### 语言插件参数
 
->
 > *即–cpp_out=，–python_out=等。如果protoc已经内置语言对应的编译插件，则无需再安装。*
 >
 > *如果没有内置语言，就需要单独安装插件，比如–go_out=，对应的就是protoc-gen-go，安装命令如下：*
@@ -60,8 +59,7 @@ $ protoc --proto_path=. --go_out=. proto/greeter/greeter.proto
 > $ go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.3.0 
 > ```
 >
->
-> **proto文件位****置参数**
+> **proto文件位置参数**
 >
 > proto文件位置参数即@`<filename>`参数，指定了proto文件的具体位置，如proto/greeter/greeter.proto。
 >

@@ -8,9 +8,15 @@
 >
 > nats的使用很简单，但它很强大，关于nats的基础理论，请移步官网学习：https://nats.io，**理论基础是重点**。
 >
-> 安装一般需要安装nats-server和natscli两个工具，方便测试和使用：https://docs.nats.io/running-a-nats-service/introduction/installation
+> 安装一般需要安装nats-server和natscli两个工具，方便测试和使用：
 >
-> https://github.com/nats-io/natscli/releases/
+>> nata-server安装：`` GO111MODULE=on go get github.com/nats-io/nats-server@latest``
+>>
+>> 详情：https://docs.nats.io/running-a-nats-service/introduction/installation
+>>
+>
+>> natscli安装：https://github.com/nats-io/natscli/releases/
+>>
 
 ### 使用
 

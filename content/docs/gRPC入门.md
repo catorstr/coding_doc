@@ -1,5 +1,9 @@
 # grpc入门操作
 
+> https://grpc.io/docs/what-is-grpc/introduction
+>
+> https://grpc.io/docs/languages/go
+>
 > 关于grpc的概念及它的作用，这里就不说了，直接上代码。
 
 ### 服务定义
@@ -35,3 +39,15 @@ message ProductId{
 > ```
 
 ### gRPC服务器端
+
+### gRPC-Gateway
+
+> 由谷歌开发的一个protoc插件，该项目旨在为您的GRPC服务提供HTTP+JSON接口。在您的服务中只需要少量的信任来附加HTTP语义，就可以用这个库生成一个反向代理。
+>
+> 参考：
+>
+> https://github.com/grpc-ecosystem/grpc-gateway
+>
+> https://grpc-ecosystem.github.io/grpc-gateway
+>
+> https://grpc-ecosystem.github.io/grpc-gateway/docs/tutorials/introduction

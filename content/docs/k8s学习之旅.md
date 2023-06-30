@@ -2,6 +2,20 @@
 
 > 安装教程看官方：https://kubernetes.io/zh-cn/docs/tasks/tools/install-kubectl-linux/
 
+```bash
+# 在 Linux 系统中安装 kubectl
+# x86-64
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+#下载 kubectl 校验和文件：
+ curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+#基于校验和文件，验证 kubectl 的可执行文件：
+echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+#验证通过时，输出为:	kubectl: OK
+#执行测试，以保障你安装的版本是最新的：
+kubectl version --client
+
+```
+
 ### 部署集群
 
 > minikube是本地Kubernetes，致力于让Kubernetes易于学习和开发
@@ -18,6 +32,7 @@
 > 安装
 >
 > ```bash
+> # 可能需要魔法，自己配置好
 > curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 > sudo install minikube-linux-amd64 /usr/local/bin/minikube
 >
@@ -27,7 +42,7 @@
 >
 > ❌  Exiting due to DRV_AS_ROOT: The "docker" driver should not be used with root privileges.
 >
-> 解决minikube start --force --driver=docker
+> 解决minikube start --force --driver=docker #需要安装docker，并且docker是启动状态
 >
 > 更多：https://minikube.sigs.k8s.io/docs/start/
 

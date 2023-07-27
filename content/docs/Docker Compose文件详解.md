@@ -66,7 +66,6 @@ $ docker-compose version
 cker-compose version 1.24.1, build 4667896b
 ```
 
-
 ### macOS
 
 Mac 的 Docker 桌面版和 Docker Toolbox 已经包括 Compose 和其他 Docker 应用程序，因此 Mac 用户不需要单独安装 Compose。Docker 安装说明可以参阅 [MacOS Docker 安装](https://www.runoob.com/docker/macos-docker-install.html)。
@@ -163,7 +162,6 @@ CMD ["flask","run"]
 * **COPY . .** : 将 . 项目中的当前目录复制到 . 镜像中的工作目录。
 * **CMD ["flask", "run"]** : 容器提供默认的执行命令为：flask run。
 
-
 ### 3、创建 docker-compose.yml
 
 在测试目录中创建一个名为 docker-compose.yml 的文件，然后粘贴以下内容：
@@ -203,7 +201,6 @@ docker-compose up
 ```
 docker-compose up -d
 ```
-
 
 ## yml 配置指令参考
 
@@ -308,7 +305,6 @@ services:
 
 注意：web 服务不会等待 redis db 完全启动 之后才启动。
 
-
 ### deploy
 
 指定与服务的部署和运行有关的配置。只在 swarm 模式下才会有用。
@@ -349,7 +345,6 @@ endpoint_mode: dnsrr
 # DNS 轮询（DNSRR）。所有的请求会自动轮询获取到集群 ip 列表中的一个 ip 地址。
 ```
 
-
  **labels** ：在服务上设置标签。可以用容器上的 labels（跟 deploy 同级的配置） 覆盖 deploy 下的 labels。
 
  **mode** ：指定服务提供的模式。
@@ -389,7 +384,6 @@ endpoint_mode: dnsrr
 * order：回滚期间的操作顺序。其中一个 stop-first（串行回滚），或者 start-first（并行回滚）（默认stop-first）。
 
  **注** ：仅支持 V3.4 及更高版本。
-
 
 ### devices
 
@@ -715,3 +709,7 @@ services:
       -"/localhost/postgres.sock:/var/run/postgres/postgres.sock"
       -"/localhost/data:/var/lib/postgresql/data"
 ```
+
+### 更多
+
+> https://blog.csdn.net/huangjinjin520/article/details/124054043

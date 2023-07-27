@@ -82,10 +82,9 @@ cobra-cli init
 
 ## 例子
 
+以下是一个示例代码，展示了如何使用Cobra和Viper来实现这种双向绑定。
+
 ```go
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -95,103 +94,69 @@ import (
 	"github.com/spf13/viper"
 )
 
-// emailCmd represents the email command
-var emailCmd = &cobra.Command{
-	Use:   "email",
-	Short: "gsp notice consumer email server",
-	PreRun: func(cmd *cobra.Command, args []string) {
-		// filehive_client_uri2 := viper.GetString("filehive_client_uri")//硬读的话，当环境变量没有值时读取到的就是空值
-		if filehive_client_uri == "" { //当命令行参数为空时才读取
-			filehive_client_uri = viper.GetString("filehive_client_uri")
-		}
-
+var rootCmd = &cobra.Command{
+	Use:   "consumer",
+	Short: "gsp notice consumer server",
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		return nil
 	},
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("email called")
-		fmt.Printf("s: %v\n", filehive_client_uri)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Printf("name: %v\n", name)
+		//注意这样写的话，name的默认值会被环境变量的值或是配置文件中的时覆盖掉,这看起来是没有什么问题：符合命令行参数>环境变量的参数>配置文件的参数>大于默认值。但是当符合命令行参数、环境变量的参数、配置文件的参数都为空时，你希望默认值有效，但是此时默认值已经被viper.GetString()函数取到的空值覆盖掉了，开发中一不注意就是一个坑。
+		name = viper.GetString("name") //a
+		fmt.Println("Hello", name)
+		//那么对有默认值的命令行参数该如何在令行参数、环境变量参数、配置文件参数、默认值之间合理的取值呢
+		// fmt.Printf("http_addr: %v\n", http_addr)
+		// if http_addr == "" {
+		// 	http_addr = viper.GetString("http-addr")
+		// }
+		// fmt.Printf("http_addr: %v\n", http_addr) //很明显这样的话只有令行参数和默认值可用，而必读取不到环境变量参数、配置文件参数
+		//emm... 我也想不出好方法，所以建议：有默认值值的参数，如果要改的话，直接命令行参数来改。
+		//没有默认值的,用以上a方式来读取环境变量和命令行参数。a方式提供了一种cobra与viper结合读取环境变量的的方式。可能还有其他的方式，但是官方没有看到详细的介绍，以上是通过测试实践的得出的建议。
+		return nil
 	},
 }
-
 var (
-	filehive_client_uri string
-	// filehive_client_token   string
-	// rabbit_mq_host_and_port string
-	// rabbit_mq_username      string
-	// rabbit_mq_password      string
+	debug     bool
+	grpc_addr string
+	http_addr string
+	name      string
 )
 
 func init() {
-	rootCmd.AddCommand(emailCmd) //将其挂载到根命令 app email -f "123"
-	emailCmd.PersistentFlags().StringVarP(&filehive_client_uri, "filehive-client-uri", "f", "", "filehive client uri -- email attachment down uri")
-	// emailCmd.PersistentFlags().StringVarP(&filehive_client_token, "filehive-client-token", "t", "", "filehive token")
-	// emailCmd.PersistentFlags().StringVarP(&rabbit_mq_host_and_port, "rabbitmq-host-port", "r", "", "rabbitmq host and port")
-	// emailCmd.PersistentFlags().StringVarP(&rabbit_mq_username, "rabbitmq-username", "u", "", "rabbitmq username")
-	// emailCmd.PersistentFlags().StringVarP(&rabbit_mq_password, "rabbitmq-password", "p", "", "rabbitmq password")
-	//使用viper设置环境变量的前缀
-	viper.SetEnvPrefix("email")
-	//读取环境变量
-	viper.AutomaticEnv()
-	//将命令行参数f的值 与 viper的key=filehive-client-uri绑定到一起，就可以使用viper.GetString("filehive_client_uri")读取命令行参数、环境变量、配置文件的值。
-	viper.BindPFlag("filehive-client-uri", emailCmd.PersistentFlags().Lookup("f"))
-	//viper.BindPFlag("filehive-client-token", emailCmd.Flags().Lookup("filehive-client-token"))
-	// viper.BindPFlag("rabbitmq-host-port", emailCmd.Flags().Lookup("rabbitmq-host-port"))
-	// viper.BindPFlag("rabbitmq-username", emailCmd.Flags().Lookup("rabbitmq-username"))
-	// viper.BindPFlag("rabbitmq-password", emailCmd.Flags().Lookup("rabbitmq-password"))
+	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "enable debug")
+	rootCmd.PersistentFlags().StringVar(&http_addr, "http-addr", ":8090", "sever http listen addr")
+	rootCmd.PersistentFlags().StringVar(&grpc_addr, "grpc-addr", ":8090", "sever grpc listen addr")
+
+	// 添加命令行参数
+	rootCmd.PersistentFlags().StringVarP(&name, "name", "n", "bob", "Your name")
+	// 与viper参数参数绑定 当用户提供 --name 标志时，变量 name 将不会设置为配置中的值。
+	viper.BindPFlag("name", rootCmd.PersistentFlags().Lookup("name"))
+	//与环境变量绑定
+	viper.SetEnvPrefix("App") //设置环境变量的前缀不管key是App，还是app、环境变量的前端都会被命名为 APP
+	viper.AutomaticEnv()      //它将检查名称与大写键匹配的环境变量，并以 SetEnvPrefix 为前缀（如果已设置）。
+	/*
+		BindEnv 接受一个或多个参数。第一个参数是键名，其余参数是绑定到该键的环境变量的名称。如果提供了多个，则它们将按指定的顺序优先。环境变量的名称区分大小写。
+	*/
+	// 如果未提供 ENV 变量名称，则 Viper 将自动假定 ENV 变量符合以下格式：前缀 +“_”+全部大写的键名。
+	//viper.BindEnv("name") // APP_NAME="Bob" ./consumer  -->Hello Bob  | APP_NAME="Bob" ./consumer --name "alce" -->Hello alce  | ./consumer --name "alce"  -->Hello alce
+	// 当您显式提供 ENV 变量名称（第二个参数）时，它不会自动添加前缀。例如，如果第二个参数是“ID”，Viper 将查找 ENV 变量“ID”。
+	//viper.BindEnv("name", "ID") //将环境变量的key=MYAPP_NAME 绑定到name上 =>APP_ID="Bob" ./consumer 加前缀读取不到值
+	//ID="Bob" ./consumer 这样才可以读取值
+	//但是，这样写的话,加不加前缀都可以读取到，有点离谱
+	viper.BindEnv("name", "NAME") //NAME="Bob" ./consumer ->Hello Bob  | APP_NAME="Bob" ./consumer -->Hello Bob
+	viper.BindPFlag("http-addr", rootCmd.PersistentFlags().Lookup("http-addr"))
+	//viper.BindEnv("http-addr", "HTTP_ADDR")
 }
 
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
-package cmd
-
-import (
-	"fmt"
-
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-)
-
-// emailCmd represents the email command
-var emailCmd = &cobra.Command{
-	Use:   "email",
-	Short: "gsp notice consumer email server",
-	PreRun: func(cmd *cobra.Command, args []string) {
-		// filehive_client_uri2 := viper.GetString("filehive_client_uri")//硬读的话，当环境变量没有值时读取到的就是空值
-		if filehive_client_uri == "" { //当命令行参数为空时才读取
-			filehive_client_uri = viper.GetString("filehive_client_uri")
-		}
-
-	},
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("email called")
-		fmt.Printf("s: %v\n", filehive_client_uri)
-	},
-}
-
-var (
-	filehive_client_uri string
-	// filehive_client_token   string
-	// rabbit_mq_host_and_port string
-	// rabbit_mq_username      string
-	// rabbit_mq_password      string
-)
-
-func init() {
-	rootCmd.AddCommand(emailCmd) //将其挂载到根命令 app email -f "123"
-	emailCmd.PersistentFlags().StringVarP(&filehive_client_uri, "filehive-client-uri", "f", "", "filehive client uri -- email attachment down uri")
-	// emailCmd.PersistentFlags().StringVarP(&filehive_client_token, "filehive-client-token", "t", "", "filehive token")
-	// emailCmd.PersistentFlags().StringVarP(&rabbit_mq_host_and_port, "rabbitmq-host-port", "r", "", "rabbitmq host and port")
-	// emailCmd.PersistentFlags().StringVarP(&rabbit_mq_username, "rabbitmq-username", "u", "", "rabbitmq username")
-	// emailCmd.PersistentFlags().StringVarP(&rabbit_mq_password, "rabbitmq-password", "p", "", "rabbitmq password")
-	//使用viper设置环境变量的前缀
-	viper.SetEnvPrefix("email")
-	//读取环境变量
-	viper.AutomaticEnv()
-	//将命令行参数f的值 与 viper的key=filehive-client-uri绑定到一起，就可以使用viper.GetString("filehive_client_uri")读取命令行参数、环境变量、配置文件的值。
-	viper.BindPFlag("filehive-client-uri", emailCmd.PersistentFlags().Lookup("f"))
-	//viper.BindPFlag("filehive-client-token", emailCmd.Flags().Lookup("filehive-client-token"))
-	// viper.BindPFlag("rabbitmq-host-port", emailCmd.Flags().Lookup("rabbitmq-host-port"))
-	// viper.BindPFlag("rabbitmq-username", emailCmd.Flags().Lookup("rabbitmq-username"))
-	// viper.BindPFlag("rabbitmq-password", emailCmd.Flags().Lookup("rabbitmq-password"))
+func Execute() error {
+	return rootCmd.Execute()
 }
 
 ```
+
+> 上述代码中，我们首先创建了一个名为 `consumer`的Cobra根命令。然后，我们添加了一个名为 `name`的命令行参数。接下来，我们使用 `viper`的 `BindPFlag`方法将该命令行参数与Viper实例中的键 `name`绑定。
+>
+> 为了绑定环境变量，我们使用 `viper`的 `BindEnv`方法来绑定名为 `MYAPP_NAME`的环境变量到 `name`键。
+>
+> 这样，当我们在命令行中提供 `--name`参数时，Viper将自动将该值绑定到 `name`键。如果未提供命令行参数，则Viper将在环境变量 中查找值。

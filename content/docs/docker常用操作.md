@@ -62,6 +62,7 @@ curl -sSL https://get.daocloud.io/docker | sh
 卸载系统之前的 docker：
 
 ```bash
+#ctenos
 sudo yum remove docker \
                   docker-client \
                   docker-client-latest \
@@ -81,7 +82,55 @@ sudo yum install -y yum-utils
 ```
 
 ```bash
+
 sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+#ubuntu 参考https://blog.csdn.net/endswell/article/details/126632613
+#如果之前有安装过旧版本，则通过此命令删除旧版本
+$ sudo apt-get remove docker docker-engine docker.io containerd runc
+# 更新资源库
+$ sudo apt-get update
+# 安装证书
+$ sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+# 安装官方GPG key
+$ sudo mkdir -p /etc/apt/keyrings
+################  这段可以替换为国内阿里云镜像地址 开始
+### 将2块 `https://download.docker.com/linux/ubuntu` 替换为 `https://mirrors.aliyun.com/docker-ce/linux/ubuntu`
+$ curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+# 建立docker资源库
+$ echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://mirrors.aliyun.com/docker-ce/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+################### 这段可以替换为国内阿里云镜像地址 结束
+# 再次更新资源库
+$ sudo apt-get update
+# 开始安装
+$ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+# 验证 是否安装成功
+$ sudo docker -v
+Docker version 20.10.17, build 100c701
+$ docker run hello-world
+docker: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/create": dial unix /var/run/docker.sock: connect: permission denied.
+See 'docker run --help'.
+# 增加当前用户入docker组中
+$ sudo groupadd docker
+groupadd: group 'docker' already exists
+$ sudo gpasswd -a $USER docker
+Adding user tester to group docker
+$ newgrp docker
+# 再次验证
+$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+$ docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+2db29710123e: Pull complete
+
+
+
 
 ```
 

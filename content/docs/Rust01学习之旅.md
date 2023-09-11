@@ -29,7 +29,7 @@ Rust 的升级非常频繁。如果您安装 Rustup 后已有一段时间，那�
 
 ## 创建新项目
 
-我们将在新的 Rust 开发环境中编写一个小应用。首先用 Cargo 创建一个新项目。在您的终端中执行：
+x //clientcargo run --bin client   Compiling grpc-demo v0.1.0 (/root/workspace/rust-study/grpc-demo)    Finished dev [unoptimized + debuginfo] target(s) in 10.52s     Running `target/debug/client`HelloResponse { greeting: "Hello Alex!" }​bash
 
 `cargo new hello-rust`
 

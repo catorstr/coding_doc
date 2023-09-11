@@ -180,3 +180,23 @@ fn main(){
 }
 
 ```
+
+### 调用
+
+```bash
+//server
+cargo run --bin server
+   Compiling grpc-demo v0.1.0 (/root/workspace/rust-study/grpc-demo)
+    Finished dev [unoptimized + debuginfo] target(s) in 12.18s
+     Running `target/debug/server`
+```
+
+```bash
+//client
+cargo run --bin client
+   Compiling grpc-demo v0.1.0 (/root/workspace/rust-study/grpc-demo)
+    Finished dev [unoptimized + debuginfo] target(s) in 10.52s
+     Running `target/debug/client`
+HelloResponse { greeting: "Hello Alex!" }
+
+```

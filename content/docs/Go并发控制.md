@@ -33,3 +33,11 @@ func TestWWorker(t *testing.T) {
 }
 
 ```
+
+#### 好用的第三方库
+
+```
+"github.com/sourcegraph/conc"
+```
+
+详细教程：https://gitee.com/huoyingwhw/go-conc-share

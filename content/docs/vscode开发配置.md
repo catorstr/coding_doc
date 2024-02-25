@@ -3,6 +3,7 @@
 > 在日常开发中我用到的vscode插件。
 
 ```go
+
 #1. Path Intellisense
 #2. Code Runner
 #3. WSL
@@ -20,10 +21,11 @@
 #14. EditorConfig for VS Code
 #15. filesize
 #16. Thunder Client
+#17. Remote - SSH
 ###### 语言 相关 ######
 #1. Go
 #2. Proto3
 #3. Go struct tag
 #4. Goctl
-
+#5。. Vue Language Features(Volar)
 ```

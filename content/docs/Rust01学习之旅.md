@@ -29,7 +29,7 @@ Rust 的升级非常频繁。如果您安装 Rustup 后已有一段时间，那�
 
 ## 创建新项目
 
-x //clientcargo run --bin client   Compiling grpc-demo v0.1.0 (/root/workspace/rust-study/grpc-demo)    Finished dev [unoptimized + debuginfo] target(s) in 10.52s     Running `target/debug/client`HelloResponse { greeting: "Hello Alex!" }​bash
+x //clientcargo run --bin client   Compiling grpc-demo v0.1.0 (/root/workspace/rust-study/grpc-demo)    Finished dev [unoptimized + debuginfo] target(s) in 10.52s     Running `target/debug/client`HelloResponse { greeting: "Hello Alex!" }bash
 
 `cargo new hello-rust`
 
@@ -260,3 +260,30 @@ cargo build
 4. 使用Cargo的约定创建并运行新项目
 
    这是一个伟大的时间来建立一个更实质性的程序，以适应阅读和编写Rust代码。
+5. rust配置crates.io国内源(windowns)，在用户目前创建.Cargo目录以及config文件（无扩展名），例如：C:\Users\[用户名]\.cargo\config。
+   填写内容:
+
+   ```bash
+   # 放到 `$HOME/.cargo/config` 文件中
+   [source.crates-io]
+   registry = "https://github.com/rust-lang/crates.io-index"
+
+   # 替换成你偏好的镜像源
+   replace-with = 'sjtu'
+
+   # 清华大学
+   [source.tuna]
+   registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
+
+   # 中国科学技术大学
+   [source.ustc]
+   registry = "git://mirrors.ustc.edu.cn/crates.io-index"
+
+   # 上海交通大学
+   [source.sjtu]
+   registry = "https://mirrors.sjtug.sjtu.edu.cn/git/crates.io-index"
+
+   # rustcc社区
+   [source.rustcc]
+   registry = "git://crates.rustcc.cn/crates.io-index"
+   ```
